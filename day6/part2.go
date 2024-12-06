@@ -1,21 +1,32 @@
 package day6
 
+import "sync"
+
 func SolveTaskPart2() int64 {
 	ans := int64(0)
 	inputGrid := ParseInputContent()
 	R, C := len(inputGrid), len(inputGrid[0])
-	gr, gc := FindGuardPosition(inputGrid)
+	grid := copy2d(inputGrid)
+	gr, gc := FindGuardPosition(grid)
+	var wg sync.WaitGroup
+	wg.Add((R * C) - 1)
+	var wlock sync.Mutex
 	for row := 0; row < R; row++ {
 		for col := 0; col < C; col++ {
-			grid := copy2d(inputGrid)
 			if row == gr && col == gc {
 				continue
 			}
-			if causesLoop(grid, gr, gc, row, col) {
-				ans += 1
-			}
+			go func() {
+				defer wg.Done()
+				if causesLoop(grid, gr, gc, row, col) {
+					defer wlock.Unlock()
+					wlock.Lock()
+					ans += 1
+				}
+			}()
 		}
 	}
+	wg.Wait()
 	return ans
 }
 
@@ -42,17 +53,15 @@ func causesLoop(grid [][]rune, r int, c int, mr, mc int) bool {
 	}
 	stateSet := make(map[State]bool)
 	direction := GetDirection(grid, r, c)
-	grid[mr][mc] = '#'
 	gr, gc := r, c
 	for isSafe(gr, gc) {
-		metObstruction := grid[gr][gc] == '#'
+		metObstruction := grid[gr][gc] == '#' || (gr == mr && gc == mc)
 		stateSet[State{gr, gc, direction}] = true
 		if direction == UP {
 			if metObstruction {
 				gr += 1
 				direction = RIGHT
 			} else {
-				grid[gr][gc] = 'X'
 				gr -= 1
 			}
 		} else if direction == DOWN {
@@ -60,7 +69,6 @@ func causesLoop(grid [][]rune, r int, c int, mr, mc int) bool {
 				gr -= 1
 				direction = LEFT
 			} else {
-				grid[gr][gc] = 'X'
 				gr += 1
 			}
 		} else if direction == LEFT {
@@ -68,7 +76,6 @@ func causesLoop(grid [][]rune, r int, c int, mr, mc int) bool {
 				gc += 1
 				direction = UP
 			} else {
-				grid[gr][gc] = 'X'
 				gc -= 1
 			}
 		} else if direction == RIGHT {
@@ -76,7 +83,6 @@ func causesLoop(grid [][]rune, r int, c int, mr, mc int) bool {
 				gc -= 1
 				direction = DOWN
 			} else {
-				grid[gr][gc] = 'X'
 				gc += 1
 			}
 		}
