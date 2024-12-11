@@ -1,9 +1,7 @@
 package day11
 
 import (
-	"advent-of-code-2024/utils"
 	"fmt"
-	"strconv"
 	"sync"
 	"sync/atomic"
 )
@@ -37,14 +35,4 @@ func splitStonesTill25(stone int64, blinkCnt int) int64 {
 	} else {
 		return splitStonesTill25(stone*2024, blinkCnt+1)
 	}
-}
-
-func SplitEvenNumber(stone int64) (int64, int64) {
-	stoneStr := strconv.FormatInt(stone, 10)
-	ln := len(stoneStr)
-	return utils.Must(strconv.ParseInt(stoneStr[:ln/2], 10, 64)), utils.Must(strconv.ParseInt(stoneStr[ln/2:], 10, 64))
-}
-
-func DigitCnt(stone int64) int {
-	return len(strconv.FormatInt(stone, 10))
 }

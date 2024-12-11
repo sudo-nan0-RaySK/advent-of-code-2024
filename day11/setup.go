@@ -18,3 +18,13 @@ func ParseInputContent() []int64 {
 	}
 	return stones
 }
+
+func SplitEvenNumber(stone int64) (int64, int64) {
+	stoneStr := strconv.FormatInt(stone, 10)
+	ln := len(stoneStr)
+	return utils.Must(strconv.ParseInt(stoneStr[:ln/2], 10, 64)), utils.Must(strconv.ParseInt(stoneStr[ln/2:], 10, 64))
+}
+
+func DigitCnt(stone int64) int {
+	return len(strconv.FormatInt(stone, 10))
+}
