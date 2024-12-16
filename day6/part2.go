@@ -6,7 +6,7 @@ func SolveTaskPart2() int64 {
 	ans := int64(0)
 	inputGrid := ParseInputContent()
 	R, C := len(inputGrid), len(inputGrid[0])
-	grid := copy2d(inputGrid)
+	grid := Copy2d(inputGrid)
 	gr, gc := FindGuardPosition(grid)
 	var wg sync.WaitGroup
 	wg.Add((R * C) - 1)
@@ -30,7 +30,7 @@ func SolveTaskPart2() int64 {
 	return ans
 }
 
-func copy2d[T any](src [][]T) [][]T {
+func Copy2d[T any](src [][]T) [][]T {
 	R, C := len(src), len(src[0])
 	duplicate := make([][]T, R)
 	for idx, row := range src {
