@@ -102,7 +102,6 @@ func SolveTaskPart2() int64 {
 		for c := 0; c < C; c++ {
 			if spcl[r][c] {
 				ans += 1
-			} else {
 			}
 		}
 	}
