@@ -55,7 +55,7 @@ type Instruction interface {
 	Operand() int64
 }
 
-func MakeInstruction(insCode, operand int64, regState *RegisterState) interface{} {
+func MakeInstruction(insCode, operand int64, regState *RegisterState) Instruction {
 	switch insCode {
 	case 0:
 		return &Adv{operand: operand, registerState: regState}
@@ -310,7 +310,7 @@ func ParseInputContent() Program {
 	insIdx := 0
 	for idx := 0; idx < len(instructionsRaw); idx += 2 {
 		ins := MakeInstruction(utils.Must(strconv.ParseInt(instructionsRaw[idx], 10, 64)), utils.Must(strconv.ParseInt(instructionsRaw[idx+1], 10, 64)), &registerState)
-		codeSegment[insIdx] = ins.(Instruction)
+		codeSegment[insIdx] = ins
 		insIdx += 1
 	}
 	return Program{&registerState, codeSegment}
